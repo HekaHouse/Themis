@@ -1,14 +1,13 @@
 package house.heka.themisexample;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -39,10 +38,10 @@ public class SampleActivity extends AppCompatActivity {
             String str = "testy mctest";
             Log.d(TAG, str);
             EncryptedShare encrypted = Encrypt.encryptStringShared(str, shared, LocalPref.getStringPref(this,"publicECDH"));
-            Log.d(TAG, encrypted.encryptedStr);
+            Log.d(TAG, encrypted.toJSON().toString());
             String decrypted = Encrypt.decryptStringShared(encrypted, shared);
             Log.d(TAG, decrypted);
-        } catch (GeneralSecurityException | IOException e1) {
+        } catch (GeneralSecurityException | IOException | JSONException e1) {
             e1.printStackTrace();
         }
 

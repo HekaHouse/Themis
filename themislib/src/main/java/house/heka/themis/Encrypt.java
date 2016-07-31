@@ -13,19 +13,14 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -34,12 +29,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyAgreement;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.x500.X500Principal;
@@ -89,7 +81,7 @@ public class Encrypt {
     public static String decryptStringShared(EncryptedShare encrypted, SecretKeySpec secretKey) throws GeneralSecurityException, IOException {
 
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        IvParameterSpec ivSpec = new IvParameterSpec(encrypted.iv);
+        IvParameterSpec ivSpec = new IvParameterSpec(Base64.decode(encrypted.iv, Base64.DEFAULT));
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
         CipherInputStream cipherInputStream = new CipherInputStream(
                 new ByteArrayInputStream(Base64.decode(encrypted.encryptedStr, Base64.DEFAULT)), cipher);
@@ -151,6 +143,35 @@ public class Encrypt {
         return decrypted;
     }
 
+    public static String privateKey2Str(PrivateKey priv) throws GeneralSecurityException {
+        KeyFactory fact = KeyFactory.getInstance("EC");
+        PKCS8EncodedKeySpec spec = fact.getKeySpec(priv,
+                PKCS8EncodedKeySpec.class);
+        byte[] packed = spec.getEncoded();
+        return Base64.encodeToString(packed, Base64.DEFAULT);
+    }
+
+    public static String publicKey2Str(PublicKey publ) throws GeneralSecurityException {
+        KeyFactory fact = KeyFactory.getInstance("EC");
+        X509EncodedKeySpec spec = fact.getKeySpec(publ,
+                X509EncodedKeySpec.class);
+        return Base64.encodeToString(spec.getEncoded(), Base64.DEFAULT);
+    }
+
+    public static PrivateKey str2privateKey(String priv_enc) throws GeneralSecurityException {
+        byte[] keyBytes = Base64.decode(priv_enc, Base64.DEFAULT);
+        KeyFactory keyFactory = KeyFactory.getInstance("EC");
+        KeySpec privateKeySpec = new PKCS8EncodedKeySpec(keyBytes);
+        return keyFactory.generatePrivate(privateKeySpec);
+    }
+
+    public static PublicKey str2publicKey(String publ_enc) throws GeneralSecurityException {
+        byte[] keyBytes = Base64.decode(publ_enc, Base64.DEFAULT);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+        KeyFactory keyFactory = KeyFactory.getInstance("EC");
+        return keyFactory.generatePublic(keySpec);
+    }
+
     private void generateECDH(Context context) throws GeneralSecurityException, IOException {
         createEncryptionKeyStore(context);
 
@@ -209,34 +230,5 @@ public class Encrypt {
 
             kpg.generateKeyPair();
         }
-    }
-
-    public static String privateKey2Str(PrivateKey priv) throws GeneralSecurityException {
-        KeyFactory fact = KeyFactory.getInstance("EC");
-        PKCS8EncodedKeySpec spec = fact.getKeySpec(priv,
-                PKCS8EncodedKeySpec.class);
-        byte[] packed = spec.getEncoded();
-        return Base64.encodeToString(packed, Base64.DEFAULT);
-    }
-
-    public static String publicKey2Str(PublicKey publ) throws GeneralSecurityException {
-        KeyFactory fact = KeyFactory.getInstance("EC");
-        X509EncodedKeySpec spec = fact.getKeySpec(publ,
-                X509EncodedKeySpec.class);
-        return Base64.encodeToString(spec.getEncoded(), Base64.DEFAULT);
-    }
-
-    public static PrivateKey str2privateKey(String priv_enc) throws GeneralSecurityException {
-        byte[] keyBytes = Base64.decode(priv_enc,Base64.DEFAULT);
-        KeyFactory keyFactory = KeyFactory.getInstance("EC");
-        KeySpec privateKeySpec = new PKCS8EncodedKeySpec(keyBytes);
-        return keyFactory.generatePrivate(privateKeySpec);
-    }
-
-    public static PublicKey str2publicKey(String publ_enc) throws GeneralSecurityException {
-        byte[] keyBytes = Base64.decode(publ_enc,Base64.DEFAULT);
-        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance("EC");
-        return keyFactory.generatePublic(keySpec);
     }
 }
