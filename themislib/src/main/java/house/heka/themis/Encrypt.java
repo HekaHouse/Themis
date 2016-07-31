@@ -175,18 +175,19 @@ public class Encrypt {
     private void generateECDH(Context context) throws GeneralSecurityException, IOException {
         createEncryptionKeyStore(context);
 
+        if (LocalPref.getStringPref(context, "publicECDH") == null) {
+            ECGenParameterSpec ecParamSpec = new ECGenParameterSpec("prime192v1");
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDH", "SC");
 
-        ECGenParameterSpec ecParamSpec = new ECGenParameterSpec("prime192v1");
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDH", "SC");
-
-        kpg.initialize(ecParamSpec, new SecureRandom());
-        KeyPair kpair = kpg.generateKeyPair();
-        PublicKey pkey = kpair.getPublic();
-        PrivateKey skey = kpair.getPrivate();
+            kpg.initialize(ecParamSpec, new SecureRandom());
+            KeyPair kpair = kpg.generateKeyPair();
+            PublicKey pkey = kpair.getPublic();
+            PrivateKey skey = kpair.getPrivate();
 
 
-        LocalPref.putStringPref(context, "publicECDH", publicKey2Str(pkey));
-        LocalPref.putStringPref(context, "privateECDH", privateKey2Str(skey));
+            LocalPref.putStringPref(context, "publicECDH", publicKey2Str(pkey));
+            LocalPref.putStringPref(context, "privateECDH", privateKey2Str(skey));
+        }
     }
 
     private void createEncryptionKeyStore(Context context) throws GeneralSecurityException, IOException {
