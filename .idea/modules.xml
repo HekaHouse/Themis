@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Themis.iml" filepath="$PROJECT_DIR$/Themis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/themisexample/themisexample.iml" filepath="$PROJECT_DIR$/themisexample/themisexample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/themislib/app.iml" filepath="$PROJECT_DIR$/themislib/app.iml" />
+    </modules>
+  </component>
+</project>
