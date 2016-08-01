@@ -61,11 +61,11 @@ public class Encrypt {
         return new SecretKeySpec(keyAgreement.generateSecret(), "AES");
     }
 
-    public static EphemeralKeyPair generateEphemeralKeys() throws GeneralSecurityException {
+    public static EphemeralKeyPair generateEphemeralKeys(Context context) throws GeneralSecurityException {
         ECGenParameterSpec ecParamSpec = new ECGenParameterSpec("brainpoolp256t1");
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDH", "SC");
         kpg.initialize(ecParamSpec, new SecureRandom());
-        return new EphemeralKeyPair(kpg.generateKeyPair());
+        return new EphemeralKeyPair(kpg.generateKeyPair(), context);
     }
 
 
