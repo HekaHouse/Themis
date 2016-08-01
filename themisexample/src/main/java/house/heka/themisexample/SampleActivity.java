@@ -26,8 +26,6 @@ public class SampleActivity extends AppCompatActivity {
         Encrypt e = new Encrypt(this);
 
         Log.d(TAG, LocalPref.getStringPref(this,"publicECDH"));
-
-
         Log.d(TAG, LocalPref.getStringPref(this,"privateECDH"));
 
         try {

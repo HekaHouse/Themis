@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Themis.iml" filepath="$PROJECT_DIR$/Themis.iml" />
       <module fileurl="file://$PROJECT_DIR$/themisexample/themisexample.iml" filepath="$PROJECT_DIR$/themisexample/themisexample.iml" />
-      <module fileurl="file://$PROJECT_DIR$/themislib/app.iml" filepath="$PROJECT_DIR$/themislib/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/themislib/themislib.iml" filepath="$PROJECT_DIR$/themislib/themislib.iml" />
     </modules>
   </component>
 </project>

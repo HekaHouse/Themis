@@ -61,6 +61,14 @@ public class Encrypt {
         return new SecretKeySpec(keyAgreement.generateSecret(), "AES");
     }
 
+    public static KeyPair generateEphemeralKeys() throws GeneralSecurityException {
+        ECGenParameterSpec ecParamSpec = new ECGenParameterSpec("brainpoolp256t1");
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDH", "SC");
+
+        kpg.initialize(ecParamSpec, new SecureRandom());
+        return kpg.generateKeyPair();
+    }
+
 
     public static EncryptedShare encryptStringShared(String toEncrypt, SecretKeySpec secretKey, String pubKey) throws GeneralSecurityException {
 
@@ -176,7 +184,7 @@ public class Encrypt {
         createEncryptionKeyStore(context);
 
         if (LocalPref.getStringPref(context, "publicECDH") == null) {
-            ECGenParameterSpec ecParamSpec = new ECGenParameterSpec("prime192v1");
+            ECGenParameterSpec ecParamSpec = new ECGenParameterSpec("brainpoolp256t1");
             KeyPairGenerator kpg = KeyPairGenerator.getInstance("ECDH", "SC");
 
             kpg.initialize(ecParamSpec, new SecureRandom());
@@ -184,9 +192,12 @@ public class Encrypt {
             PublicKey pkey = kpair.getPublic();
             PrivateKey skey = kpair.getPrivate();
 
+            String pub = publicKey2Str(pkey);
+            LocalPref.putStringPref(context, "publicECDH", pub);
 
-            LocalPref.putStringPref(context, "publicECDH", publicKey2Str(pkey));
-            LocalPref.putStringPref(context, "privateECDH", privateKey2Str(skey));
+            String priv = privateKey2Str(skey);
+            LocalPref.putStringPref(context, "privateECDH", priv);
+
         }
     }
 
